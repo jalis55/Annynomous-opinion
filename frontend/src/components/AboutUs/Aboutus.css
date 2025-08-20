@@ -1,0 +1,23 @@
+
+  .aboutus {
+    padding: 50px;
+    text-align: center;
+  }
+ 
+  .leader-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    margin-bottom: 30px;
+  }
+  .developer-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid white;
+    margin: 10px;
+  }
+  .person-info {
+    margin-top: 10px;
+  }

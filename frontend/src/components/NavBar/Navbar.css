@@ -1,0 +1,65 @@
+.navbar-custom {
+  background-color: #ffffff !important;
+  position: fixed !important; 
+  top: 0; 
+  width: 100%; 
+  z-index: 1000; 
+}
+
+
+body {
+  padding-top: 70px !important; 
+}
+
+.navbar-custom .navbar-brand {
+  margin-right: 20px;
+}
+
+.navbar-custom .navbar-logo {
+  height: 40px; /* Adjust this to the desired height of your logo */
+  width: auto;
+}
+
+.navbar-custom .btn {
+  background: linear-gradient(45deg, #6e2bff, #ff416c) !important; 
+  color: white;
+  border: none;
+  margin-right: 20px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-custom .btn:last-child {
+  margin-right: 0;
+}
+
+.navbar-custom .btn:hover {
+  background: linear-gradient(45deg, #41b3ff, #dfff2b) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-toggler {
+  border: 1px solid rgb(255, 254, 254) !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2855, 55, 55, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-color: rgb(1, 158, 237) !important;
+  height: 2px !important;
+  width: 20px !important;
+  margin: 5px !important;
+  display: block !important;
+}
+
+@media (max-width: 576px) {
+  .navbar-custom .btn {
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+  }
+}

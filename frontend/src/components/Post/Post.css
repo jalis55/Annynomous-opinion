@@ -1,0 +1,191 @@
+.comment-card {
+    border: 1px solid #e1e1e1;
+    padding: 15px;
+    margin: 1px 0;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background-color: #f5f7fa;
+}
+.comment-header {
+    display: flex;
+    align-items: start;
+}
+.comment-avatar img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+.comment-info {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.comment-username {
+    font-weight: bold;
+}
+.comment-time {
+    margin-left: 10px;
+    color: #606060;
+}
+.comment-body {
+    margin-top: 5px;
+    margin-left: 60px; 
+}
+.comment-actions {
+    margin-left: 60px; 
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    color: #606060;
+}
+.comment-actions i {
+    margin-right: 5px;
+    margin-left: 10px; 
+}
+.comment-reply {
+    background: none;
+    border: none;
+    color: #065fd4;
+    padding: 0;
+    cursor: pointer;
+}
+.comment-reply:hover {
+    text-decoration: underline;
+}
+
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(230, 77, 77, 0.842); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+
+.sentiment-text{
+    position: absolute;
+    top: 0;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7); 
+    color: white; 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+    font-weight: bold;
+}
+
+.reply-wrapper{
+    max-width: 50%;
+    width: 100%;
+    margin: 10px 0 0 57px !important;
+    display: none;
+}
+
+.reply-wrapper-show{
+    display: block;
+}
+
+.reply-input{
+    display: flex;
+    gap: 10px;  
+}
+
+.reply-input img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+.reply-input textarea{
+    min-height: 29px; 
+    width: 100%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    resize: none;
+    background-color: transparent;
+    overflow: hidden;
+}
+.reply-input textarea:focus{
+    outline: none;
+}
+.reply-button{
+    width: 100%;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.reply-button .btn{
+    border-radius: 20px !important;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.btn:focus,.btn:active {
+    box-shadow: none !important;
+ }
+
+.show-comment{
+    margin-left: 60px; 
+    margin-top: 10px;
+    /* background-color: black; */
+}
+
+.show-comment div div{
+    font-size: 15px;
+    margin-left: 20px;
+    position: relative;
+}
+ .show-comment div div img{
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    top: 5px;
+  }
+
+  .view-comment{
+    background: none;
+    border: none;
+    color: #065fd4;
+    cursor: pointer;
+    
+}
+ .view-comment:hover{
+    text-decoration: underline;
+ }
+ .hide-comment{
+    display: none;
+ }
+
+ .show-comment div div{
+    position: relative;
+    margin-bottom: 5px;
+ }
+
+.show-comment div div div:nth-child(2){
+    word-wrap: break-word;
+    margin-left: 30px;
+}
+
+@media screen and (max-width: 395px) {
+    .reply-button button{
+        border-radius: 20px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+}
