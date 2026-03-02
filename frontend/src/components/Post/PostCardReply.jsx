@@ -11,6 +11,7 @@ const PostCardReply = ({ id, img }) => {
     const [showHideReply, setShowHideReply] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Fetch existing comments on mount
     useEffect(() => {
@@ -35,9 +36,7 @@ const PostCardReply = ({ id, img }) => {
                 setError(error.message);
                 setReplies([]);
             })
-            .finally(() => {
-                setLoading(false);
-            });
+            .finally(() => setLoading(false));
     }, [id]);
 
     // Real-time WebSocket scoped to this post
@@ -47,7 +46,6 @@ const PostCardReply = ({ id, img }) => {
     useEffect(() => {
         if (lastMessage !== null) {
             const newComment = JSON.parse(lastMessage.data);
-            // Only add if not already in the list (avoid duplicates for the submitter)
             setReplies(prev => {
                 const alreadyExists = prev.some(r => r.id === newComment.id);
                 if (alreadyExists) return prev;
@@ -69,38 +67,63 @@ const PostCardReply = ({ id, img }) => {
         }
     }, [textAreaVal]);
 
-    const handleReply = (e) => {
+    const handleReply = async (e) => {
         e.preventDefault();
         const post_id = e.target.value;
-        const postData = { comment_content: textAreaVal, post: post_id };
 
-        api.post(`/api/comments/add/`, postData)
-            .then(response => response.data)
-            .then(data => {
+        setIsSubmitting(true);
+
+        try {
+            // Step 1: AI moderation check (same as CreatePost)
+            const moderationResponse = await api.post('/genai/post/checker/', {
+                content: textAreaVal.trim()
+            });
+            const moderationResult = moderationResponse.data;
+
+            if (!moderationResult.data.accepted) {
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Your opinion has been posted successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-                setTextAreaVal('');
-                setShowHideReply(true);
-                // Optimistically add — the WebSocket duplicate check (by id) will skip it
-                setReplies(prev => {
-                    const alreadyExists = prev.some(r => r.id === data.id);
-                    if (alreadyExists) return prev;
-                    return [data, ...prev];
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'There was an error posting your opinion.',
+                    title: 'Reply Rejected',
+                    text: 'Your reply contains inappropriate content and cannot be posted.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
+                return;
+            }
+
+            // Step 2: Submit the comment
+            const data = await api.post('/api/comments/add/', {
+                comment_content: textAreaVal,
+                post: post_id
+            }).then(r => r.data);
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your reply has been posted!',
+                icon: 'success',
+                confirmButtonText: 'OK'
             });
+            setTextAreaVal('');
+            setInput(false);
+            setShowHideReply(true);
+
+            // Optimistic update — WS dedup will skip it if it arrives
+            setReplies(prev => {
+                const alreadyExists = prev.some(r => r.id === data.id);
+                if (alreadyExists) return prev;
+                return [data, ...prev];
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'There was an error posting your reply.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (loading) return <div>Loading comments...</div>;
@@ -125,19 +148,29 @@ const PostCardReply = ({ id, img }) => {
                         onChange={(e) => setTextAreaVal(e.target.value)}
                         rows={1}
                         ref={textAreaRef}
+                        disabled={isSubmitting}
                     ></textarea>
                 </div>
                 <div className='reply-button mt-2 row justify-content-end'>
-                    <button className='btn btn-secondary btn-sm' onClick={handleCancelButton}>
+                    <button
+                        className='btn btn-secondary btn-sm'
+                        onClick={handleCancelButton}
+                        disabled={isSubmitting}
+                    >
                         Cancel
                     </button>
                     <button
-                        className={`btn btn-primary btn-sm ml-3${textAreaVal === '' ? ' disabled' : ''}`}
+                        className={`btn btn-primary btn-sm ml-3${(textAreaVal === '' || isSubmitting) ? ' disabled' : ''}`}
                         value={id}
-                        onClick={textAreaVal === '' ? null : handleReply}
-                        disabled={textAreaVal === ''}
+                        onClick={textAreaVal === '' || isSubmitting ? null : handleReply}
+                        disabled={textAreaVal === '' || isSubmitting}
                     >
-                        Reply
+                        {isSubmitting ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-1" role="status" />
+                                Checking...
+                            </>
+                        ) : 'Reply'}
                     </button>
                 </div>
             </div>
