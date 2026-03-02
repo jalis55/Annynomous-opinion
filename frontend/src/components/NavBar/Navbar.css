@@ -1,65 +1,123 @@
+/* Glassmorphism Navbar */
 .navbar-custom {
-  background-color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   position: fixed !important; 
   top: 0; 
   width: 100%; 
   z-index: 1000; 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.8rem 1rem;
+  transition: all 0.3s ease-in-out;
 }
-
 
 body {
-  padding-top: 70px !important; 
+  padding-top: 85px !important; 
 }
 
+/* Brand & Logo */
 .navbar-custom .navbar-brand {
-  margin-right: 20px;
+  margin-right: 30px;
+  font-family: 'Poppins', sans-serif; /* Assuming a nice font is available or fallback */
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2d3748 !important; /* Darker, modern grey */
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-custom .navbar-logo {
-  height: 40px; /* Adjust this to the desired height of your logo */
+  height: 40px; 
   width: auto;
+  margin-right: 12px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
+/* Navigation Buttons */
 .navbar-custom .btn {
-  background: linear-gradient(45deg, #6e2bff, #ff416c) !important; 
-  color: white;
-  border: none;
-  margin-right: 20px;
-  border-radius: 5px;
-  text-transform: uppercase;
-  font-weight: bold;
-  padding: 10px 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: white !important; 
+  color: #4a5568 !important;
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-right: 15px;
+  border-radius: 12px;
+  text-transform: capitalize;
+  font-weight: 600;
+  padding: 8px 20px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
 }
 
 .navbar-custom .btn:last-child {
   margin-right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
 }
 
 .navbar-custom .btn:hover {
-  background: linear-gradient(45deg, #41b3ff, #dfff2b) !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  color: #2d3748 !important;
 }
 
+.navbar-custom .btn:last-child:hover {
+  color: white !important;
+  box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+}
+
+/* Mobile Toggler */
 .navbar-toggler {
-  border: 1px solid rgb(255, 254, 254) !important;
+  border: none !important;
+  outline: none !important;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none !important;
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2855, 55, 55, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-  background-color: rgb(1, 158, 237) !important;
-  height: 2px !important;
-  width: 20px !important;
-  margin: 5px !important;
+  background-color: #4a5568 !important;
+  height: 2.5px !important;
+  width: 22px !important;
+  margin: 2.5px 0 !important;
   display: block !important;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background-image: none !important; 
 }
 
-@media (max-width: 576px) {
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .navbar-custom {
+      padding: 0.5rem 1rem;
+  }
+
+  .navbar-collapse {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 15px;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255,255,255,0.5);
+  }
+
   .navbar-custom .btn {
       width: 100%;
-      margin: 5px 0;
-      padding: 10px;
+      margin: 8px 0;
+      text-align: center;
   }
 }

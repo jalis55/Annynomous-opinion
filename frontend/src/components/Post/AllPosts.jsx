@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
 import Posts from './Posts';
 import './Post.css';
+import api from '../../api/axios';
 
 const WS_URL = 'ws://127.0.0.1:8000/ws/homepage/';
 
@@ -12,9 +13,11 @@ const AllPosts = () => {
 
   // 1️⃣  REST fetch on first mount
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/posts/')
-      .then(res => res.json())
-      .then(json => setPosts(json?.results || json))
+    api.get('/api/posts/')
+      .then(res => {
+        const json = res.data;
+        setPosts(json?.results || json);
+      })
       .catch(console.error);
   }, []);
 

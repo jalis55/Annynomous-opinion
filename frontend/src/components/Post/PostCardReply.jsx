@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import api from '../../api/axios';
 
 const PostCardReply = ({ id, img }) => {
     const textAreaRef = useRef(null);
@@ -12,20 +13,17 @@ const PostCardReply = ({ id, img }) => {
 
     useEffect(() => {
         // fetch previous comments when the component mounts
-        const url = `http://127.0.0.1:8000/api/post/comments/${id}/`;
+        const url = `/api/post/comments/${id}/`;
         setLoading(true);
-        fetch(url)
+        api.get(url)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
+                return response.data;
             })
             .then(data => {
                 // Ensure data is an array
                 if (Array.isArray(data)) {
                     setReplies(data);
-                
+
                 } else if (data && Array.isArray(data.comments)) {
                     // Handle nested comments array
                     setReplies(data.comments);
@@ -62,23 +60,14 @@ const PostCardReply = ({ id, img }) => {
         e.preventDefault();
         const post_id = e.target.value;
         const postData = { "comment_content": textAreaVal, "post": post_id };
-        const url = `http://127.0.0.1:8000/api/comments/add/`;
+        const url = `/api/comments/add/`;
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
-        })
+        api.post(url, postData)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
+                return response.data;
             })
             .then(data => {
-               
+
                 Swal.fire({
                     title: 'Success!',
                     text: 'Your opinion has been posted successfully!',
@@ -116,19 +105,19 @@ const PostCardReply = ({ id, img }) => {
                     Reply
                 </button>
             </div>
-            
+
             <div className={`reply-wrapper${showInput ? ' reply-wrapper-show' : ''}`}>
                 <div className="reply-input">
                     <div className="reply-avatar">
                         <img src={img} alt="Avatar" />
                     </div>
-                    <textarea 
-                        name="" 
-                        id="" 
-                        placeholder='Add a reply...' 
-                        value={textAreaVal} 
-                        onChange={(e) => setTextAreaVal(e.target.value)} 
-                        rows={1} 
+                    <textarea
+                        name=""
+                        id=""
+                        placeholder='Add a reply...'
+                        value={textAreaVal}
+                        onChange={(e) => setTextAreaVal(e.target.value)}
+                        rows={1}
                         ref={textAreaRef}
                     ></textarea>
                 </div>
@@ -136,9 +125,9 @@ const PostCardReply = ({ id, img }) => {
                     <button className='btn btn-secondary btn-sm' onClick={handleCancelButton}>
                         Cancel
                     </button>
-                    <button 
-                        className={`btn btn-primary btn-sm ml-3 ${textAreaVal === '' ? ' disabled' : ''}`} 
-                        value={id} 
+                    <button
+                        className={`btn btn-primary btn-sm ml-3 ${textAreaVal === '' ? ' disabled' : ''}`}
+                        value={id}
                         onClick={textAreaVal === '' ? null : handleReply}
                         disabled={textAreaVal === ''}
                     >
@@ -146,7 +135,7 @@ const PostCardReply = ({ id, img }) => {
                     </button>
                 </div>
             </div>
-             
+
             {/* show comments of this post */}
             <div className='show-comment'>
                 {replies.length > 0 && (
@@ -154,7 +143,7 @@ const PostCardReply = ({ id, img }) => {
                         {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
                     </button>
                 )}
-                
+
                 {replies.length > 0 && showHideReply && replies.map((reply, index) => (
                     <div className="comment-item" key={reply.id || index}>
                         <div className="comment-content">
@@ -163,7 +152,7 @@ const PostCardReply = ({ id, img }) => {
                         </div>
                     </div>
                 ))}
-                
+
                 {replies.length === 0 && !loading && (
                     <div className="no-comments">No replies yet</div>
                 )}

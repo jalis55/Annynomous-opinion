@@ -27,7 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api.apps.ApiConfig'
+    'api.apps.ApiConfig',
+    'genai.apps.GenaiConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
+        "NAME": "unsaid_db",
         "USER": "postgres",
         "PASSWORD": "redhat123",
         "HOST":"localhost",
