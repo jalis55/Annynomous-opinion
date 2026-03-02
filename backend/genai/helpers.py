@@ -54,9 +54,9 @@ Now classify only the next user message.
 
 def check_content(content):
     completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="moonshotai/kimi-k2-instruct-0905",
         temperature=0,
-        max_tokens=20,
+        max_tokens=4096,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": content}
