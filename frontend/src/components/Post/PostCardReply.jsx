@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import useWebSocket from 'react-use-websocket';
 import api from '../../api/axios';
 
 const PostCardReply = ({ id, img }) => {
@@ -11,28 +12,23 @@ const PostCardReply = ({ id, img }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Fetch existing comments on mount
     useEffect(() => {
-        // fetch previous comments when the component mounts
         const url = `/api/post/comments/${id}/`;
         setLoading(true);
         api.get(url)
-            .then(response => {
-                return response.data;
-            })
+            .then(response => response.data)
             .then(data => {
-                // Ensure data is an array
+                let comments = [];
                 if (Array.isArray(data)) {
-                    setReplies(data);
-
+                    comments = data;
                 } else if (data && Array.isArray(data.comments)) {
-                    // Handle nested comments array
-                    setReplies(data.comments);
+                    comments = data.comments;
                 } else {
-                    // If data is not an array, set empty array
                     console.warn('API response is not an array:', data);
-                    setReplies([]);
                 }
-                setShowHideReply(data.length > 0);
+                setReplies(comments);
+                setShowHideReply(comments.length > 0);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -44,9 +40,26 @@ const PostCardReply = ({ id, img }) => {
             });
     }, [id]);
 
-    const handleCancelButton = (e) => {
+    // Real-time WebSocket scoped to this post
+    const WS_URL = `ws://127.0.0.1:8000/ws/post/${id}/`;
+    const { lastMessage } = useWebSocket(WS_URL, { shouldReconnect: () => true });
+
+    useEffect(() => {
+        if (lastMessage !== null) {
+            const newComment = JSON.parse(lastMessage.data);
+            // Only add if not already in the list (avoid duplicates for the submitter)
+            setReplies(prev => {
+                const alreadyExists = prev.some(r => r.id === newComment.id);
+                if (alreadyExists) return prev;
+                return [newComment, ...prev];
+            });
+            setShowHideReply(true);
+        }
+    }, [lastMessage]);
+
+    const handleCancelButton = () => {
         setTextAreaVal('');
-        setInput((prev) => !prev);
+        setInput(prev => !prev);
     };
 
     useEffect(() => {
@@ -59,15 +72,11 @@ const PostCardReply = ({ id, img }) => {
     const handleReply = (e) => {
         e.preventDefault();
         const post_id = e.target.value;
-        const postData = { "comment_content": textAreaVal, "post": post_id };
-        const url = `/api/comments/add/`;
+        const postData = { comment_content: textAreaVal, post: post_id };
 
-        api.post(url, postData)
-            .then(response => {
-                return response.data;
-            })
+        api.post(`/api/comments/add/`, postData)
+            .then(response => response.data)
             .then(data => {
-
                 Swal.fire({
                     title: 'Success!',
                     text: 'Your opinion has been posted successfully!',
@@ -76,10 +85,14 @@ const PostCardReply = ({ id, img }) => {
                 });
                 setTextAreaVal('');
                 setShowHideReply(true);
-                // Add new reply to the beginning of the array
-                setReplies(prevReplies => [data, ...prevReplies]);
+                // Optimistically add — the WebSocket duplicate check (by id) will skip it
+                setReplies(prev => {
+                    const alreadyExists = prev.some(r => r.id === data.id);
+                    if (alreadyExists) return prev;
+                    return [data, ...prev];
+                });
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error('Error:', error);
                 Swal.fire({
                     title: 'Error!',
@@ -90,18 +103,13 @@ const PostCardReply = ({ id, img }) => {
             });
     };
 
-    if (loading) {
-        return <div>Loading comments...</div>;
-    }
-
-    if (error) {
-        return <div>Error loading comments: {error}</div>;
-    }
+    if (loading) return <div>Loading comments...</div>;
+    if (error) return <div>Error loading comments: {error}</div>;
 
     return (
         <>
             <div className="comment-actions">
-                <button className="comment-reply" onClick={() => setInput((prev) => !prev)}>
+                <button className="comment-reply" onClick={() => setInput(prev => !prev)}>
                     Reply
                 </button>
             </div>
@@ -112,8 +120,6 @@ const PostCardReply = ({ id, img }) => {
                         <img src={img} alt="Avatar" />
                     </div>
                     <textarea
-                        name=""
-                        id=""
                         placeholder='Add a reply...'
                         value={textAreaVal}
                         onChange={(e) => setTextAreaVal(e.target.value)}
@@ -126,7 +132,7 @@ const PostCardReply = ({ id, img }) => {
                         Cancel
                     </button>
                     <button
-                        className={`btn btn-primary btn-sm ml-3 ${textAreaVal === '' ? ' disabled' : ''}`}
+                        className={`btn btn-primary btn-sm ml-3${textAreaVal === '' ? ' disabled' : ''}`}
                         value={id}
                         onClick={textAreaVal === '' ? null : handleReply}
                         disabled={textAreaVal === ''}
@@ -136,16 +142,15 @@ const PostCardReply = ({ id, img }) => {
                 </div>
             </div>
 
-            {/* show comments of this post */}
             <div className='show-comment'>
                 {replies.length > 0 && (
-                    <button className='view-comment' onClick={() => setShowHideReply((val) => !val)}>
+                    <button className='view-comment' onClick={() => setShowHideReply(val => !val)}>
                         {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
                     </button>
                 )}
 
                 {replies.length > 0 && showHideReply && replies.map((reply, index) => (
-                    <div className="comment-item" key={reply.id || index}>
+                    <div className="comment-item" key={reply.id ?? index}>
                         <div className="comment-content">
                             <img src={img} alt="avatar" />
                             <div>{reply.comment_content}</div>

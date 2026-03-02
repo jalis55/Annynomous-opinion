@@ -4,7 +4,7 @@ from api.models import Post, Comment
 class CommentDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['comment_content', 'created_at']
+        fields = ['id', 'comment_content', 'created_at']
         read_only_fields = ('id', 'created_at')
 
 # class CommentListSerializer(serializers.Serializer):
@@ -31,7 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['post', 'comment_content', 'created_at']
+        fields = ['id', 'post', 'comment_content', 'created_at']
         read_only_fields = ('id', 'created_at')
 
 class CommentListSerializer(serializers.Serializer):
