@@ -2,10 +2,17 @@ from rest_framework import serializers
 from api.models import Post, Comment
 
 class CommentDetailSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = ['id', 'comment_content', 'created_at']
+        fields = ['id', 'post', 'parent', 'comment_content', 'created_at', 'replies']
         read_only_fields = ('id', 'created_at')
+
+    def get_replies(self, obj):
+        if obj.replies.exists():
+            return CommentDetailSerializer(obj.replies.all(), many=True).data
+        return []
 
 # class CommentListSerializer(serializers.Serializer):
 #     post=serializers.IntegerField()
@@ -31,7 +38,7 @@ class PostSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'comment_content', 'created_at']
+        fields = ['id', 'post', 'parent', 'comment_content', 'created_at']
         read_only_fields = ('id', 'created_at')
 
 class CommentListSerializer(serializers.Serializer):

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Sentiment from 'sentiment';
 
-import CommentModal from '../Comment Modal/CommentModal';
 
 import PostCard from './PostCard';
 
@@ -26,8 +25,7 @@ const Posts = ({ post }) => {
         setSentiment(sentimentType);
     }, [post.post_content]);
 
-    // const handleShow = () => setShowModal(true);
-    // const handleClose = () => setShowModal(false);
+
 
     return (
         <div className="container mt-5">

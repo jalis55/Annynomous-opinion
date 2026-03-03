@@ -4,6 +4,9 @@ from api.serializer import PostSerializer, CommentListSerializer, CommentCreateS
 from rest_framework.response import Response
 from api.models import Post, Comment
 from django.shortcuts import get_object_or_404
+from django.db import models
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all().order_by('-id')
@@ -25,7 +28,9 @@ class CommentListView(generics.RetrieveAPIView):
         post_id = self.kwargs["post_id"]
         # Get the post with prefetched comments for better performance
         post = get_object_or_404(
-            Post.objects.prefetch_related('comment_set').all(), 
+            Post.objects.prefetch_related(
+                models.Prefetch('comment_set', queryset=Comment.objects.filter(parent__isnull=True))
+            ).all(), 
             id=post_id
         )
         return post
