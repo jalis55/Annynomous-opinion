@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Swal from 'sweetalert2';
 import api from '../../api/axios';
+import './CreatePost.css';
 
 const CreatePost = () => {
   const [comment, setComment] = useState('');
@@ -102,121 +103,41 @@ const CreatePost = () => {
   const isNearLimit = comment.length > 300;
   const isOverLimit = comment.length > 350;
 
-  const containerStyle = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #ede2e2f2 0%, #092e69ff 100%)',
-    padding: '20px'
-  };
-
-  const cardStyle = {
-    background: 'rgba(255, 255, 255, 0.05)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '20px',
-    padding: '2rem',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-    maxWidth: '600px',
-    width: '100%'
-  };
-
-  const textareaStyle = {
-    backgroundColor: 'rgba(43, 58, 82, 0.8)',
-    color: '#f8f9fa',
-    border: '2px solid rgba(214, 214, 99, 0.3)',
-    borderRadius: '12px',
-    fontSize: '16px',
-    lineHeight: '1.5',
-    transition: 'all 0.3s ease',
-    resize: 'none',
-    padding: '1rem',
-    width: '100%',
-    height: '150px'
-  };
-
-  const counterStyle = {
-    color: isOverLimit ? '#e74c3c' : isNearLimit ? '#f39c12' : '#d6d663',
-    fontSize: '14px',
-    fontWeight: '500',
-    transition: 'color 0.3s ease'
-  };
-
-  const submitButtonStyle = {
-    background: 'linear-gradient(135deg, #4a5fc1 0%, #6c5ce7 100%)',
-    border: 'none',
-    borderRadius: '50px',
-    padding: '12px 40px',
-    fontSize: '16px',
-    fontWeight: '600',
-    transition: 'all 0.3s ease',
-    opacity: isSubmitting ? 0.7 : 1
-  };
 
   return (
-    <div style={containerStyle} className="d-flex justify-content-center align-items-center">
-      <div style={cardStyle}>
+    <div className="cp-container d-flex justify-content-center align-items-center">
+      <div className="cp-card">
         <form onSubmit={handleFormSubmit}>
           <div className="text-center mb-4">
-            <h1 style={{
-              color: '#d6d663',
-              fontSize: '2.5rem',
-              fontWeight: '300',
-              marginBottom: '0.5rem'
-            }}>
+            <h1 className="cp-title">
               Share Your Thoughts
             </h1>
-            <p style={{
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '1.1rem',
-              marginBottom: '0'
-            }}>
+            <p className="cp-subtitle">
               Express yourself anonymously
             </p>
-            <div style={{
-              height: '3px',
-              background: 'linear-gradient(90deg, transparent, #d6d663, transparent)',
-              margin: '1.5rem auto',
-              width: '100px'
-            }}></div>
+            <div className="cp-divider"></div>
           </div>
 
           <div className="form-group mb-4">
             <div style={{ position: 'relative' }}>
               <textarea
-                className="form-control"
+                className={`cp-textarea form-control ${isOverLimit ? 'over-limit' : isNearLimit ? 'near-limit' : ''}`}
                 id="opinion"
                 rows={6}
-                style={{
-                  ...textareaStyle,
-                  borderColor: isOverLimit ? '#e74c3c' : isNearLimit ? '#f39c12' : 'rgba(214, 214, 99, 0.3)'
-                }}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="What's on your mind? Share your thoughts anonymously..."
                 disabled={isSubmitting}
               />
-              <div style={{
-                position: 'absolute',
-                bottom: '15px',
-                right: '15px',
-                background: 'rgba(43, 58, 82, 0.9)',
-                padding: '4px 8px',
-                borderRadius: '12px'
-              }}>
-                <span style={counterStyle}>
+              <div className="cp-counter-wrap">
+                <span className={`cp-counter ${isOverLimit ? 'over-limit' : isNearLimit ? 'near-limit' : ''}`}>
                   {comment.length} / 350
                 </span>
               </div>
             </div>
 
             {isOverLimit && (
-              <div style={{
-                color: '#e74c3c',
-                fontSize: '14px',
-                marginTop: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}>
+              <div className="cp-error-msg">
                 <i className="fas fa-exclamation-circle"></i>
                 Character limit exceeded
               </div>
@@ -226,19 +147,8 @@ const CreatePost = () => {
           <div className="d-flex justify-content-center">
             <button
               type="submit"
-              className="btn"
-              style={submitButtonStyle}
+              className="cp-submit-btn btn"
               disabled={isSubmitting || comment.trim() === '' || isOverLimit}
-              onMouseOver={(e) => {
-                if (!isSubmitting && !isOverLimit && comment.trim() !== '') {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(106, 90, 205, 0.4)';
-                }
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
             >
               {isSubmitting ? (
                 <>

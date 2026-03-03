@@ -1,0 +1,120 @@
+.cp-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ede2e2f2 0%, #092e69ff 100%);
+    padding: 20px;
+}
+
+.cp-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+}
+
+.cp-title {
+    color: #d6d663;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+}
+
+.cp-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.cp-divider {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d6d663, transparent);
+    margin: 1.5rem auto;
+    width: 100px;
+}
+
+.cp-textarea {
+    background-color: rgba(43, 58, 82, 0.8);
+    color: #f8f9fa;
+    border: 2px solid rgba(214, 214, 99, 0.3);
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+    resize: none;
+    padding: 1rem;
+    width: 100%;
+    height: 150px;
+}
+
+.cp-textarea:focus {
+    background-color: rgba(43, 58, 82, 0.95);
+    border-color: #d6d663;
+    box-shadow: 0 0 0 0.25rem rgba(214, 214, 99, 0.25);
+    color: #fff;
+    outline: none;
+}
+
+.cp-textarea.near-limit {
+    border-color: #f39c12;
+}
+
+.cp-textarea.over-limit {
+    border-color: #e74c3c;
+}
+
+.cp-counter-wrap {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(43, 58, 82, 0.9);
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+.cp-counter {
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    color: #d6d663;
+}
+
+.cp-counter.near-limit {
+    color: #f39c12;
+}
+
+.cp-counter.over-limit {
+    color: #e74c3c;
+}
+
+.cp-error-msg {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cp-submit-btn {
+    background: linear-gradient(135deg, #4a5fc1 0%, #6c5ce7 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.cp-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 90, 205, 0.4);
+}
+
+.cp-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
